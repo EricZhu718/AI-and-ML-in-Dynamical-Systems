@@ -1,0 +1,15 @@
+{
+    "name": "node-ex-website",
+    "version": "1.0.0",
+    "description": "Showcase AI and ML in the Stock Market",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.17.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/EricZhu718/AI-and-ML-in-Dynamical-Systems.git"
+      }
+}
