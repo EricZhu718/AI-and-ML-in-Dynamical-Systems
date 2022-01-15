@@ -1,12 +1,19 @@
+const socket = io.connect('http://localhost:3000')
 
-var makeNewMap = () => {
+
+
+
+function makeNewGraph() {
+    const totalWidth = 900
+    const totalHeight = 500
+
     // set the dimensions and margins of the graph
     var margin = {top: 10, right: 40, bottom: 30, left: 30},
-        width = 450 - margin.left - margin.right,
-        height = 400 - margin.top - margin.bottom;
+        width = totalWidth - margin.left - margin.right,
+        height = totalHeight - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
-    var sVg = d3.select("#Area")
+    var sVg = d3.select("#chart_svg")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -23,18 +30,20 @@ var makeNewMap = () => {
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(x));
 
-    // X scale and Axis
+    // Y scale and Axis
     var y = d3.scaleLinear()
     .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
     .range([height, 0]);       // This is the corresponding value I want in Pixel
     sVg
     .append('g')
     .call(d3.axisLeft(y));
-
-
 }
 
 
-makeNewMap()
-console.log("making new chart")
+makeNewGraph()
 
+console.log("A")
+
+
+
+console.log("B")

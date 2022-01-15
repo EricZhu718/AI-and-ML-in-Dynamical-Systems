@@ -3,15 +3,19 @@
     <head>
         <title>Hello World</title>
         <link rel="stylesheet" href="styles.css">
+        <script src = "https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
     </head>
     <body>
-        <div id = "Title_Text"><h1>Body</h1></div>
+        <div id = "Title_Text"><h1>S&P 500</h1></div>
         <div id = "chart_div">
-            <svg id = "chart_svg" width = "100%", height = "400px">
+            <svg id = "chart_svg">
                 
             </svg>
+              
         </div>
         <script src="https://d3js.org/d3.v4.js"></script>
-        <script src = "index.js"></script>
+        <script type="module" src = "index.js"></script>
+        <script>
+        </script>
     </body>
 </html>
