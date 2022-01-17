@@ -10,7 +10,8 @@
         "express": "^4.17.2",
         "python-shell": "^3.0.1",
         "socket.io": "^4.4.1",
-        "socket.io-client": "^4.4.1"
+        "socket.io-client": "^4.4.1",
+        "body-parser": "1.8"
     },
     "repository": {
         "type": "git",

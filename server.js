@@ -2,18 +2,56 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const http = require('http')
-
+const router = express.Router()
 const url=require('url');
 
 const fs = require('fs');
 
+app.use(
+  express.urlencoded({
+    extended: true
+  })
+)
 
-
-app.get('/sub', function(request, response) {
+app.post('/sub', function(request, response) {
   const htmlfile = 'express/testing.html'
   var html = fs.readFileSync(htmlfile).toString();
   response.send(html);
+})
+
+app.post("/add", function(req, res) {
+  console.log(req.body)
+  
+  var num1 = Number(req.body.num1);
+  var num2 = Number(req.body.num2);
+    
+  var result = num1 + num2 ;
+    
+  res.send("Addition - " + result);
 });
+
+app.post('/loadData', function(req, res) {
+  
+  console.log(req.body)
+  
+  var start = (req.body.start);
+  var end = (req.body.end);
+    
+  var pyshell = new PythonShell('analysis/import_data.py');
+    pyshell.send(start)
+    pyshell.send(end)
+
+    var lastMessage = ""
+    pyshell.on('message', function (message) {
+      lastMessage = (message)
+    });
+
+    // end the input stream and allow the process to exit
+    pyshell.end(function (err) {
+      res.send(lastMessage);
+    });
+});
+
 
 const server = http.createServer(app);
 

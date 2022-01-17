@@ -44,14 +44,16 @@ makeNewGraph()
 
 console.log("A")
 
-
+$.post('http://localhost:3000/loadData', {start: '1990-01-01', end: '2021-07-12'}, function(data, status) {
+    console.log(`${data} and status is ${status}`)
+})
 
 console.log("Asking for data")
 
-socket.emit('stock market data request', {start: '1990-01-01', end: '2021-07-12'})
+// socket.emit('stock market data request', {start: '1990-01-01', end: '2021-07-12'})
 
 
-socket.on('stock market data sent', function (message) {
+// socket.on('stock market data sent', function (message) {
     // recieves stock market data
-    console.log(JSON.parse(message))
-});
+//     console.log(JSON.parse(message))
+// });
