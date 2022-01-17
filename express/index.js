@@ -53,5 +53,5 @@ socket.emit('stock market data request', {start: '1990-01-01', end: '2021-07-12'
 
 socket.on('stock market data sent', function (message) {
     // recieves stock market data
-    console.log(message)
+    console.log(JSON.parse(message))
 });

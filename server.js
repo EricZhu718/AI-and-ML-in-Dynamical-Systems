@@ -1,7 +1,22 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const server = require('http').createServer(app);
+const http = require('http')
+
+const url=require('url');
+
+const fs = require('fs');
+
+
+
+app.get('/sub', function(request, response) {
+  const htmlfile = 'express/testing.html'
+  var html = fs.readFileSync(htmlfile).toString();
+  response.send(html);
+});
+
+const server = http.createServer(app);
+
 
 
 const port = 3000
@@ -44,10 +59,9 @@ io.on('connection', (socket) => {
             throw err;
         };
         socket.emit('stock market data sent', lastMessage)
-        console.log(lastMessage)
+        // console.log(lastMessage)
         console.log('finished');
     });
-    
   })
 });
 
