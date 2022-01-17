@@ -6,6 +6,7 @@
         "start": "node server.js"
     },
     "dependencies": {
+        "axios": "^0.24.0",
         "express": "^4.17.2",
         "python-shell": "^3.0.1",
         "socket.io": "^4.4.1",
