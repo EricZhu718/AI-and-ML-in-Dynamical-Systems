@@ -9,7 +9,7 @@ function makeNewGraph(data) {
     const totalHeight = 500
 
     // set the dimensions and margins of the graph
-    var margin = {top: 10, right: 40, bottom: 30, left: 100},
+    var margin = {top: 10, right: 50, bottom: 30, left: 50},
         width = totalWidth - margin.left - margin.right,
         height = totalHeight - margin.top - margin.bottom;
 
@@ -68,7 +68,7 @@ $.post('http://localhost:3000/loadData', {start: '1990-01-01', end: '2021-07-12'
     // get point pairs from JSON
     var reshapedArr = []
     for (var key in data.Open) {
-        reshapedArr.push({x: (key - startDateEpoch)/86400000, y:data.Open[key]})
+        reshapedArr.push({x: (key - startDateEpoch)/86400000/365.0, y:data.Open[key]})
     }
 
     console.log(reshapedArr)

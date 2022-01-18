@@ -36,10 +36,17 @@ app.post('/loadData', function(req, res) {
   
   var start = (req.body.start);
   var end = (req.body.end);
+  var ticker = (req.body.ticker)
     
   var pyshell = new PythonShell('analysis/import_data.py');
     pyshell.send(start)
     pyshell.send(end)
+
+    if(ticker != null){
+      pyshell.send(ticker)
+    } else {
+      pyshell.send('^GSPC')
+    }
 
     var lastMessage = ""
     pyshell.on('message', function (message) {
