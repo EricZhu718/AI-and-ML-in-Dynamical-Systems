@@ -1,8 +1,12 @@
-
 const socket = io.connect('http://localhost:3000')
 
+var originalStockData
 
-
+function sleep(seconds) 
+{
+  var e = new Date().getTime() + (seconds * 1000);
+  while (new Date().getTime() <= e) {}
+}
 
 function makeNewGraph(data) {
     const totalWidth = 900
@@ -38,24 +42,30 @@ function makeNewGraph(data) {
     sVg
     .append('g')
     .call(d3.axisLeft(y));
+    
+    
 
-    // Add the line
-    sVg.append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", "steelblue")
-      .attr("stroke-width", 1.5)
-      .attr("d", d3.line()
+    var millisecondsToWait = 0;
+    setTimeout(function() {
+        // Add the line
+        sVg.append("path")
+        .datum(data)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.5)
+        .attr("d", d3.line()
         .x(function(d) { return x(d.x) })
         .y(function(d) { return y(d.y) })
-      )
+        )
+    }, millisecondsToWait);
+    
+    
 }
 
 
 
 
-
-$.post('http://localhost:3000/loadData', {start: '1990-01-01', end: '2021-07-12'}, function(data, status) {
+$.post('http://localhost:3000/loadData', {start: '2020-01-01', end: '2021-07-12'}, function(data, status) {
     // console.log('recieved')
     // console.log(JSON.parse(data))
     data = JSON.parse(data)
@@ -68,21 +78,38 @@ $.post('http://localhost:3000/loadData', {start: '1990-01-01', end: '2021-07-12'
     // get point pairs from JSON
     var reshapedArr = []
     for (var key in data.Open) {
-        reshapedArr.push({x: (key - startDateEpoch)/86400000/365.0, y:data.Open[key]})
+        reshapedArr.push({x: (key - startDateEpoch)/86400000, y:data.Open[key]})
     }
-
-    console.log(reshapedArr)
-    console.log(startDate)
+    // console.log(JSON.stringify(reshapedArr))
+    // console.log(startDate)
 
     makeNewGraph(reshapedArr)
 
-
-    var sVg = d3.select("#chart_svg")
-    
+    originalStockData = reshapedArr
     // console.log(reshapedArr.length)
 })
 
 
+setTimeout(()=>{
+    $.post('http://localhost:3000/SSA', {data: originalStockData}, function(data, status) {
+        console.log(data)
+    }) 
+
+
+
+    // $.post('http://localhost:3000/SSAData', {data: originalStockData}, function(data, status) {
+    //     // console.log('recieved')
+    //     // console.log(JSON.parse(data))
+    
+    //     console.log(data)
+    
+    //     data = JSON.parse(data)
+        
+    //     console.log(data)
+    //     // console.log(reshapedArr.length)
+    // })
+    
+}, 3000)
 
 // socket.emit('stock market data request', {start: '1990-01-01', end: '2021-07-12'})
 
@@ -91,3 +118,4 @@ $.post('http://localhost:3000/loadData', {start: '1990-01-01', end: '2021-07-12'
     // recieves stock market data
 //     console.log(JSON.parse(message))
 // });
+
