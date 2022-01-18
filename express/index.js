@@ -1,14 +1,15 @@
+
 const socket = io.connect('http://localhost:3000')
 
 
 
 
-function makeNewGraph() {
+function makeNewGraph(data) {
     const totalWidth = 900
     const totalHeight = 500
 
     // set the dimensions and margins of the graph
-    var margin = {top: 10, right: 40, bottom: 30, left: 30},
+    var margin = {top: 10, right: 40, bottom: 30, left: 100},
         width = totalWidth - margin.left - margin.right,
         height = totalHeight - margin.top - margin.bottom;
 
@@ -23,7 +24,7 @@ function makeNewGraph() {
 
     // X scale and Axis
     var x = d3.scaleLinear()
-    .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
+    .domain([0, d3.max(data, function(d) { return +d.x; })])         // This is the min and the max of the data: 0 to 100 if percentages
     .range([0, width]);       // This is the corresponding value I want in Pixel
     sVg
     .append('g')
@@ -32,23 +33,56 @@ function makeNewGraph() {
 
     // Y scale and Axis
     var y = d3.scaleLinear()
-    .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
+    .domain([0, d3.max(data, function(d) { return +d.y; })])         // This is the min and the max of the data: 0 to 100 if percentages
     .range([height, 0]);       // This is the corresponding value I want in Pixel
     sVg
     .append('g')
     .call(d3.axisLeft(y));
+
+    // Add the line
+    sVg.append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", 1.5)
+      .attr("d", d3.line()
+        .x(function(d) { return x(d.x) })
+        .y(function(d) { return y(d.y) })
+      )
 }
 
 
-makeNewGraph()
 
-console.log("A")
+
 
 $.post('http://localhost:3000/loadData', {start: '1990-01-01', end: '2021-07-12'}, function(data, status) {
-    console.log(`${data} and status is ${status}`)
+    // console.log('recieved')
+    // console.log(JSON.parse(data))
+    data = JSON.parse(data)
+
+
+    // earliest date
+    var startDate = new Date(parseInt(Object.keys(data.Open)))
+    var startDateEpoch = parseInt(Object.keys(data.Open))
+    
+    // get point pairs from JSON
+    var reshapedArr = []
+    for (var key in data.Open) {
+        reshapedArr.push({x: (key - startDateEpoch)/86400000, y:data.Open[key]})
+    }
+
+    console.log(reshapedArr)
+    console.log(startDate)
+
+    makeNewGraph(reshapedArr)
+
+
+    var sVg = d3.select("#chart_svg")
+    
+    // console.log(reshapedArr.length)
 })
 
-console.log("Asking for data")
+
 
 // socket.emit('stock market data request', {start: '1990-01-01', end: '2021-07-12'})
 

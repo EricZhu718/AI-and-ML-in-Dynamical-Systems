@@ -10,5 +10,8 @@ def getDataFrame(start_date, end_date, ticker = '^GSPC'):
 
 
 if __name__ == '__main__':
-    # (getDataFrame('1990-01-01', '2021-07-12')).to_csv('csv data/testing.csv')
-    print(getDataFrame(input(), input()).to_json())
+    # print(getDataFrame('1990-01-01', '2021-07-12').filter(['Date', 'Open']))
+
+    frame = getDataFrame(input(), input()).filter(['Open'])
+    # print(frame)
+    print(frame.to_json())
