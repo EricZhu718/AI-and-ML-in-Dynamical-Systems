@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "description": "Showcase AI and ML in the Stock Market",
     "scripts": {
-        "start": "node server.js"
+        "start": "node server.js",
+        "devStart": "nodemon server.js"
     },
     "dependencies": {
         "axios": "^0.24.0",

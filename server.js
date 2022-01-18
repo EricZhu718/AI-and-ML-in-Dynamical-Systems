@@ -76,44 +76,6 @@ app.post('/loadData', function(req, res) {
 
 
 
-
-
-// must have an array of json objects with each entry having a 'y' key 
-app.post('/SAAData', function(req, res) {  
-  console.log('A')
-  var pyshell = new PythonShell('analysis/singular_spectrum_with_inputs.py');
-  pyshell.send(req.body.data)
-  console.log('B')
-
-  if (req.body.groups != null) {
-    pyshell.send(req.body.groups)
-  } else {
-    pyshell.send('10')
-  }
-
-  if (req.body.window != null) {
-    pyshell.send(req.body.window)
-  } else {
-    pyshell.send('10')
-  }
-
-  console.log('C')
-
-  var totalMessage = ""
-  pyshell.on('message', function (message) {
-    totalMessage += (message)
-  });
-
-  // end the input stream and allow the process to exit
-  pyshell.end(function (err) {
-    console.log(totalMessage)
-    res.send(totalMessage)
-    res.end()
-  });
-});
-
-
-
 const server = http.createServer(app);
 const port = 3000
 const io = require("socket.io")(server)

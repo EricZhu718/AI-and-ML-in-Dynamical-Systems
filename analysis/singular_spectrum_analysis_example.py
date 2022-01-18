@@ -27,8 +27,6 @@ if __name__ == '__main__':
     groups = 10
     ssa = SingularSpectrumAnalysis(window_size=window_size, groups=groups)
     X_ssa = ssa.fit_transform([lorenz_x])
-
-    print(json.loads(X_ssa))
     plt.figure(figsize=(16, 6))
     ax1 = plt.subplot(121)
     ax1.plot(timeVals, full_lorenz[:, 1])
