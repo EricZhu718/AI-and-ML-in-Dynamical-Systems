@@ -4,6 +4,7 @@ var originalStockData
 
 var ssaData
 
+
 function sleep(seconds) 
 {
   var e = new Date().getTime() + (seconds * 1000);
@@ -48,23 +49,26 @@ function makeNewGraph(data) {
     
 
     var millisecondsToWait = 0;
-    setTimeout(function() {
-        // Add the line
+
+    drawLine = function() {  // Create a update selection: bind to the new data
         sVg.append("path")
-            .datum(data)
-            .attr("fill", "none")
-            .attr("stroke", "steelblue")
-            .attr("stroke-width", 1.5)
-            .attr("d", d3.line()
-                .x(function(d) { return x(d.x) })
-                .y(function(d) { return y(d.y) })
-            )
-    }, millisecondsToWait);
+        .datum(data)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.5)
+        .attr("d", d3.line()
+          .x(function(d) { return x(d.x) })
+          .y(function(d) { return y(d.y) })
+          )
+    }
+    setTimeout(drawLine(), millisecondsToWait);
     
     
 }
 
 
+
+var drawLine
 
 
 $.post('http://localhost:3000/loadData', {start: '2020-01-01', end: '2021-07-12'}, function(data, status) {
@@ -109,19 +113,8 @@ setTimeout(()=>{
 
         console.log(ssaData)
 
-        var sVg = d3.select("#chart_svg")
+        drawLine(d3.select("#chart_svg"), ssaData)
 
-        sVg.append("path")
-            .datum(ssaData)
-            .attr("fill", "none")
-            .attr("stroke", "steelblue")
-            .attr("stroke-width", 1.5)
-            .attr("d", d3.line()
-                .x(function(d) { return x(d.x) })
-                .y(function(d) { return y(d.y) })
-            )
-
-        console.log('finished drawing')
     })
 }, 2000)
 
