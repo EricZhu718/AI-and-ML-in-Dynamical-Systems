@@ -55,21 +55,42 @@ def update_output(input1, input2):
     unprocessed_df = import_data.getDataFrame('2020-01-01', '2021-01-01') 
     changed_id = [p['prop_id'] for p in callback_context.triggered][0]
 
-    fig = NULL
+    fig = {
+        'data': [{
+            'x': NULL,
+            'y': NULL,
+            'type': 'line'
+        }],
+        'layout': {
+            # You need to supply the axes ranges for smooth animations
+            'xaxis': {
+                'range': [unprocessed_df['Date'][0], unprocessed_df['Date'][len(unprocessed_df['Date'])-1]]
+            },
+            'yaxis': {
+                'range': [800, 4000]
+            },
+
+            'transition': {
+                'duration': 500,
+                'easing': 'cubic-in-out'
+            }
+        }
+    }
+
+    print('fig: ')
+    print(fig)
     if 'SSA.n_clicks' in changed_id:
         global data_type
         SSA_df = SSA.get_SSA(unprocessed_df['Open'])
-        # print(SSA_df)
-        graph_df = []
-        for index in range(len(SSA_df)):
-            graph_df.append({'Date': unprocessed_df['Date'][index], 'SSA': SSA_df[index]})
         # print(graph_df)
         print("SSA finished")
-        fig= px.line(graph_df, x="Date", y="SSA")
+        fig['data'][0]['x'] = unprocessed_df['Date']
+        fig['data'][0]['y'] = SSA_df
     elif 'Ticker.value' in changed_id:
         print('1: '+ input1.upper())
         
-        fig= px.line(unprocessed_df, x="Date", y="Open")
+        fig['data'][0]['x'] = unprocessed_df['Date']
+        fig['data'][0]['y'] = unprocessed_df['Open']
     else: 
         global data_type
         SSA_df = SSA.get_SSA(unprocessed_df['Open'])
@@ -78,7 +99,8 @@ def update_output(input1, input2):
         for index in range(len(SSA_df)):
             graph_df.append({'Date': unprocessed_df['Date'][index], 'SSA': SSA_df[index]})
         # print(graph_df)
-        fig= px.line(unprocessed_df, x="Date", y="Open")
+        fig['data'][0]['x'] = unprocessed_df['Date']
+        fig['data'][0]['y'] = unprocessed_df['Open']
     return fig
 
 
