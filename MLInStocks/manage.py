@@ -76,16 +76,20 @@ def update_output(input1, input2):
             }
         }
     }
-
-    print('fig: ')
-    print(fig)
     if 'SSA.n_clicks' in changed_id:
         global data_type
         SSA_df = SSA.get_SSA(unprocessed_df['Open'])
         # print(graph_df)
         print("SSA finished")
         fig['data'][0]['x'] = unprocessed_df['Date']
-        fig['data'][0]['y'] = SSA_df
+        fig['data'][0]['y'] = unprocessed_df['Open']
+
+
+        fig['data'].append({
+            'x': unprocessed_df['Date'],
+            'y': SSA_df,
+            'type': 'line'
+        })
     elif 'Ticker.value' in changed_id:
         print('1: '+ input1.upper())
         
