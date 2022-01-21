@@ -1,0 +1,21 @@
+#Graph {
+    height: 500px;
+    width: 1200px;
+    margin: auto;
+}
+
+#Ticker {
+    margin: auto;
+    position: relative
+}
+
+#SSA{
+    margin: auto;
+    position: relative
+}
+
+#inputs{
+    margin: auto;
+    display:flex;
+    width: 40%
+}
