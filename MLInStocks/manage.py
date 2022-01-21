@@ -6,6 +6,8 @@ import sys
 from tokenize import String
 from xml.etree.ElementTree import tostring
 
+from pyparsing import line
+
 sys.path.append('MLInStocks/analysis')
 
 import pandas as pd
@@ -52,59 +54,105 @@ unprocessed_df = import_data.getDataFrame('2018-01-01', '2022-01-01')
 def update_output(input1, input2):
     global unprocessed_df
     changed_id = [p['prop_id'] for p in callback_context.triggered][0]
+    
+    
+    fig = NULL
+    data = NULL
+    frames = NULL
+    layout = NULL
 
-    fig = {
-        'data': [{
-            'x': NULL,
-            'y': NULL,
-            'type': 'line',
-            'color': 'black'
-        }],
-        'layout': {
-            # You need to supply the axes ranges for smooth animations
-            'xaxis': {
-                'range': [unprocessed_df['Date'][0], unprocessed_df['Date'][len(unprocessed_df['Date'])-1]]
-            },
-            'yaxis': {
-                'range': [800, 5000]
-            },
+    date_df = unprocessed_df['Date']
 
-            'transition': {
-                'duration': 2000,
-                'easing': 'cubic-in-out'
-            }
-        }
-    }
     if 'SSA.n_clicks' in changed_id:
-        global data_type
+        # SSA Button clicked
         SSA_df = SSA.get_SSA(unprocessed_df['Open'])
-        # print(graph_df)
-        print("SSA finished")
-        fig['data'][0]['x'] = unprocessed_df['Date']
-        fig['data'][0]['y'] = SSA_df
 
-        fig['data'].append({
-            'x': unprocessed_df['Date'],
-            'y': unprocessed_df['Open'],
-            'type': 'line',
-            'color': 'blue'
-        })
+        open_df = unprocessed_df['Open']
+        trace1 = go.Scatter(
+            x = date_df[:2],
+            y= open_df[:2],
+            mode='lines',
+            line = {'width': 1.5}
+        )
 
-    elif 'Ticker.value' in changed_id:
-        print('1: '+ input1.upper())
-        
-        fig['data'][0]['x'] = unprocessed_df['Date']
-        fig['data'][0]['y'] = unprocessed_df['Open']
+        trace2 = go.Scatter(
+            x = date_df[:2],
+            y= SSA_df[:2],
+            mode='lines',
+            line = {'width': 1.5}
+        )
+
+        frames = [dict(data= [dict(type='scatter',
+                           x=date_df[:k+1],
+                           y=open_df[:k+1]),
+                      dict(type='scatter',
+                           x=date_df[:k+1],
+                           y=SSA_df[:k+1])
+                     ],
+               traces= [0, 1],  
+              )for k  in  range(1, len(date_df)-1)]
+
+        layout = go.Layout(
+            width=700,
+            height=600,
+            showlegend=False,
+            hovermode='x unified',
+            updatemenus=[
+                dict(
+                    type='buttons', showactive=False,
+                    y=1.05,
+                    x=1.15,
+                    xanchor='right',
+                    yanchor='top',
+                    pad=dict(t=0, r=10),
+                    buttons=[dict(label='Play',
+                        method='animate',
+                        args=[None, 
+                            dict(
+                                frame=dict(duration=1, 
+                                redraw=False),
+                                transition=dict(duration=0),
+                                fromcurrent=True,
+                                mode='immediate'
+                            )]
+                    )]
+                ),
+                dict(
+                    type = "buttons",
+                    direction = "left",
+                    buttons=list([
+                        dict(
+                            args=[{"yaxis.type": "linear"}],
+                            label="LINEAR",
+                            method="relayout"
+                        ),
+                        dict(
+                            args=[{"yaxis.type": "log"}],
+                            label="LOG",
+                            method="relayout"
+                        )
+                    ]),
+                ),
+            ]              
+        )
+
+        fig = go.Figure(data=[trace1, trace2], frames=frames, layout=layout)
+
+        print('ran ssa')
     else: 
-        global data_type
+        # start up
+        # SSA Button clicked
         SSA_df = SSA.get_SSA(unprocessed_df['Open'])
-        # print(SSA_df)
-        graph_df = []
-        for index in range(len(SSA_df)):
-            graph_df.append({'Date': unprocessed_df['Date'][index], 'SSA': SSA_df[index]})
-        # print(graph_df)
-        fig['data'][0]['x'] = unprocessed_df['Date']
-        fig['data'][0]['y'] = unprocessed_df['Open']
+
+        open_df = unprocessed_df['Open']
+        trace1 = go.Scatter(
+            x = date_df,
+            y= open_df,
+            mode='lines',
+            line = {'width': 1.5}
+        )
+
+        fig = go.Figure(data=[trace1])
     return fig
 
 
