@@ -16,8 +16,6 @@ from dash import Dash, dcc, html, Input, Output, callback_context  # pip install
 import import_data
 import singular_spectrum_analysis as SSA
 
-
-
 unprocessed_df = NULL
 SSA_df = NULL
 
@@ -43,6 +41,7 @@ app.layout = html.Div([
 ])
 
 data_type = 'unprocessed'
+unprocessed_df = import_data.getDataFrame('2018-01-01', '2022-01-01') 
 
 # callback for the text input field
 @app.callback(
@@ -52,14 +51,14 @@ data_type = 'unprocessed'
 )
 def update_output(input1, input2):
     global unprocessed_df
-    unprocessed_df = import_data.getDataFrame('2020-01-01', '2021-01-01') 
     changed_id = [p['prop_id'] for p in callback_context.triggered][0]
 
     fig = {
         'data': [{
             'x': NULL,
             'y': NULL,
-            'type': 'line'
+            'type': 'line',
+            'color': 'black'
         }],
         'layout': {
             # You need to supply the axes ranges for smooth animations
@@ -67,11 +66,11 @@ def update_output(input1, input2):
                 'range': [unprocessed_df['Date'][0], unprocessed_df['Date'][len(unprocessed_df['Date'])-1]]
             },
             'yaxis': {
-                'range': [800, 4000]
+                'range': [800, 5000]
             },
 
             'transition': {
-                'duration': 500,
+                'duration': 2000,
                 'easing': 'cubic-in-out'
             }
         }
@@ -82,14 +81,15 @@ def update_output(input1, input2):
         # print(graph_df)
         print("SSA finished")
         fig['data'][0]['x'] = unprocessed_df['Date']
-        fig['data'][0]['y'] = unprocessed_df['Open']
-
+        fig['data'][0]['y'] = SSA_df
 
         fig['data'].append({
             'x': unprocessed_df['Date'],
-            'y': SSA_df,
-            'type': 'line'
+            'y': unprocessed_df['Open'],
+            'type': 'line',
+            'color': 'blue'
         })
+
     elif 'Ticker.value' in changed_id:
         print('1: '+ input1.upper())
         
